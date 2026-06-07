@@ -505,10 +505,10 @@ function loop(){
     for(let i=preds.length-1;i>=0;i--){
       const q=preds[i];
       if(q.dead) continue;
-      // Posição da boca: extremidade frontal do sprite
-      const mouthX = q.faceRight ? q.x+PFW*0.45 : q.x-PFW*0.45;
-      const mouthY = q.y;
-      if(hit2(F.x,F.y,FRAD,mouthX,mouthY,10)){
+      // Boca da piranha: ponta frontal do sprite (cabeça à direita quando faceRight)
+      const mouthX = q.faceRight ? q.x+PFW*0.82 : q.x-PFW*0.82;
+      const mouthY = q.y + PSH*0.05;
+      if(hit2(F.x,F.y,FRAD,mouthX,mouthY,8)){
         preds.splice(i,1);takeHit('predador');break;
       }
     }
@@ -1239,7 +1239,7 @@ function die(c){
   document.getElementById('gPtsLbl').textContent=t('pts_label');
   const facts=T[lang].facts_death; document.getElementById('gFact').textContent=facts[~~rnd(0,facts.length)];
   showScr('sG');
-  setTimeout(()=>{ if(!running) restartGame(); }, 5000);
+  setTimeout(()=>{ if(!running) goHome(); }, 5000);
 }
 function winGame(){
   document.getElementById('btnHome').style.display='none';
@@ -1250,7 +1250,7 @@ function winGame(){
   document.getElementById('wSub').textContent=t('win_sub');
   const wfacts=T[lang].facts_win; document.getElementById('wFact').textContent=wfacts[~~rnd(0,wfacts.length)];
   showScr('sW');
-  setTimeout(()=>{ if(!running) restartGame(); }, 5000);
+  setTimeout(()=>{ if(!running) goHome(); }, 5000);
 }
 function startGame(){phIdx=0;phTimer=0;score=0;lives=3;O2=O2MAX;EN=ENMAX;frame=0;debris=[];prey=[];o2b=[];preds=[];herons=[];bottomPreds=[];flowers=[];bonusItems=[];copepods=[];pops=[];sparks=[];herons=[];bottomPreds=[];flowers=[];initFish();initBgBubs();initAlgae();initRoots();updLives();showPhase(0);}
 function restartGame(){startGame();}
