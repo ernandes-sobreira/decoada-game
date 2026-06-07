@@ -265,7 +265,10 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
   <div class="go-sub" id="goSub"></div>
   <div class="sc-num" id="gSc">0</div>
   <div class="sc-lbl" id="gPtsLbl">pontos</div>
-  <p class="cause" id="gCause"><script>
+  <p class="cause" id="gCause"></p>
+  <div class="fact" id="gFact"></div>
+
+<script>
 const cv=document.getElementById('c'),cx=cv.getContext('2d');
 let W,H;
 function rsz(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
