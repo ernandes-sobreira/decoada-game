@@ -1453,6 +1453,12 @@ function applyLang(){
 
 // ── RANKING ──
 let _pendingScore=0, _pendingPhase=0;
+function submitAndRank(){
+  // Pegar score atual da tela
+  const scEl=document.getElementById('gSc')||document.getElementById('wSc');
+  const sc=parseInt(scEl?scEl.textContent:score)||score;
+  promptName(sc, phIdx+1);
+}
 function promptName(sc,ph){
   _pendingScore=sc; _pendingPhase=ph;
   const nw=document.getElementById('nameWrap');
