@@ -314,8 +314,8 @@ cv.addEventListener('mouseup',     ()=>{mdn=false;ptr=null;});
 const PHASES=[
   {n:1,get title(){return t('ph1_title')},sci:'Inundação submerge <em>matéria orgânica terrestre</em>. Decomposição microbiana inicia. O₂ ainda normal: <em>~8,2 mg/L</em>.<br><br><strong>🫧 Bolhas verdes</strong> = oxigênio dissolvido — colete para respirar.<br><strong>⚡ Invertebrados</strong> no fundo = energia — coma para sobreviver.<br><strong>Arraste o dedo</strong> para nadar.',dur:30,o2r:.27,enr:.015,dRate:65,pRate:88,o2Rate:33,predRate:0},
   {n:2,get title(){return t('ph2_title')},sci:'O₂ abaixo de <em>4 mg/L</em>. Peixes iniciam <em>Respiração Superficial Aquática (RSA)</em>.<br><br><strong>⚠ Piranhas aparecem</strong> — elas te perseguem. Fique em movimento.<br><strong>🫧 Suba rápido</strong> para coletar O₂ antes que acabe.<br>Detritos orgânicos flutuantes: <em>colidiu = comeu = energia</em>.',dur:34,o2r:.41,enr:.025,dRate:50,pRate:75,o2Rate:27,predRate:320},
-  {n:3,get title(){return t('ph3_title')},sci:'O₂ abaixo de <em>2 mg/L</em>. <em>Depressão metabólica</em> severa.<br><br><strong>🦈 Arraias e cascudos</strong> no fundo — cuidado ao mergulhar para comer.<br><strong>Mova-se devagar</strong> — velocidade drena energia mais rápido.<br>Use as <em>raízes</em> como esconderijo dos predadores.',dur:37,o2r:.95,enr:.038,dRate:40,pRate:62,o2Rate:24,predRate:220,bottomPred:180,sci3:true},
-  {n:4,get title(){return t('ph4_title')},sci:'O₂ próximo de <em>zero</em>. Sem fotossíntese à noite.<br><br><strong>🐦 Garça aparece</strong> — ela ataca pelo bico. Evite a zona do bico.<br>A garça também <em>captura piranhas</em> — às vezes deixe ela agir.<br><strong>Piranhas ficam na superfície.</strong> Mergulhe para escapar.',dur:40,o2r:1.1,enr:.055,dRate:32,pRate:50,o2Rate:18,predRate:160,heronRate:280,surfacePreds:true},
+  {n:3,get title(){return t('ph3_title')},sci:'O₂ abaixo de <em>2 mg/L</em>. <em>Depressão metabólica</em> severa.<br><br><strong>🦈 Arraias e cascudos</strong> no fundo — cuidado ao mergulhar para comer.<br><strong>Mova-se devagar</strong> — velocidade drena energia mais rápido.<br>Use as <em>raízes</em> como esconderijo dos predadores.',dur:37,o2r:.65,enr:.038,dRate:40,pRate:62,o2Rate:24,predRate:220,bottomPred:180,sci3:true},
+  {n:4,get title(){return t('ph4_title')},sci:'O₂ próximo de <em>zero</em>. Sem fotossíntese à noite.<br><br><strong>🐦 Garça aparece</strong> — ela ataca pelo bico. Evite a zona do bico.<br>A garça também <em>captura piranhas</em> — às vezes deixe ela agir.<br><strong>Piranhas ficam na superfície.</strong> Mergulhe para escapar.',dur:40,o2r:.85,enr:.055,dRate:32,pRate:50,o2Rate:18,predRate:160,heronRate:280,surfacePreds:true},
   {n:5,title:"Amanhecer — Pulso Final",sci:'A luz retorna. O₂ se recupera.<br><br><strong>🌸 Flores na superfície</strong> — o Pantanal renascendo.<br>O₂ sobe sozinho agora — mas predadores ainda existem.<br><em>Sobreviva até o fim para vencer.</em> Você quase chegou lá.',dur:42,o2r:-.18,enr:.042,dRate:26,pRate:46,o2Rate:16,predRate:380,flowers:true},
 ];
 const DFACTS=['A 26°C, a decomposição microbiana pode derrubar o O₂ de 8 mg/L a zero em menos de 72 horas.','A RSA explora uma película de 1–2 mm de O₂ na superfície. Quando a estratificação térmica a rompe — não há onde respirar.','Depressão metabólica permite reduzir consumo de ATP em 70% durante hipóxia. Mas o movimento ainda custa.','Durante decoada, milhares de peixes por km² morrem — liberando enormes pulsos de N e P que fertilizam o próximo bloom.'];
@@ -1069,6 +1069,7 @@ function drawBottomPreds(){
 }
 
 function drawHerons(){
+  if(!herons||!herons.length) return;
   const SY = H*0.086; // linha da superfície da água
   const FLOOR = H-32;  // fundo (onde a perna encosta)
 
@@ -1083,7 +1084,7 @@ function drawHerons(){
     // ── Ripples na superfície ──
     for(let ri=0;ri<3;ri++){
       const rr=20+ri*16+Math.sin(frame*0.08+ri)*3;
-      cx.beginPath();cx.ellipse(x,SY,rr,rr*0.2,0,0,Math.PI*2);
+      cx.beginPath();cx.arc(x,SY,rr,0,Math.PI*2);
       cx.strokeStyle=`rgba(180,220,255,${0.28-ri*0.08})`;cx.lineWidth=1;cx.stroke();
     }
 
@@ -1140,13 +1141,13 @@ function drawHerons(){
       // ── CABEÇA: sprite real da garça ──
       const bicoBase = headCY+10;
       const bicoTip  = headCY+50;
-      if(sprLoaded===12 && sHeronHead.complete){
+      if(sHeronHead && sHeronHead.complete && sHeronHead.naturalWidth>0){
         // Centrar a cabeça: sprite é frontal, bico aponta para baixo
         // Alinhar base do bico com headCY+10
         cx.drawImage(sHeronHead, x-HHW/2, headCY-HHH*0.55, HHW, HHH);
       } else {
         // Fallback canvas
-        cx.beginPath();cx.ellipse(x,headCY,20,16,0,0,Math.PI*2);
+        cx.beginPath();cx.arc(x,headCY,20,0,Math.PI*2);
         cx.fillStyle='#f0ece0';cx.fill();
       }
       // Bico canvas por cima (posicionado abaixo da cabeça sprite)
@@ -1173,7 +1174,6 @@ function drawHerons(){
     }
   });
 }
-
 
 function drawParticles(){
   sparks=sparks.filter(s=>s.life>0);
@@ -1299,7 +1299,9 @@ function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 function lerp(a,b,t){return a+(b-a)*t;}
 function rnd(a,b){return a+Math.random()*(b-a);}
 function hit2(ax,ay,ar,bx,by,br){const dx=ax-bx,dy=ay-by;return dx*dx+dy*dy<(ar+br)*(ar+br);}
-function showScr(id){['sI','sP','sO','sG','sW','sR'].forEach(s=>{const el=document.getElementById(s);if(el)el.classList.remove('on');});if(id){const el=document.getElementById(id);if(el)el.classList.add('on');}}
+function showScr(id){['sI','sP','sO','sG','sW','sR'].forEach(s=>{const el=document.getElementById(s);if(el)el.classList.remove('on');});// Esconder nameWrap ao trocar tela
+const nww=document.getElementById('nameWrap');if(nww&&id&&id!=='nameWrap')nww.style.display='none';
+if(id){const el=document.getElementById(id);if(el)el.classList.add('on');}}
 let idleF=0;
 function idleLp(){if(running)return;requestAnimationFrame(idleLp);idleF++;cx.clearRect(0,0,W,H);const gr=cx.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#001a10');gr.addColorStop(1,'#000a06');cx.fillStyle=gr;cx.fillRect(0,0,W,H);bgs.forEach(b=>{b.y-=b.sp;if(b.y<-8){b.y=H+8;b.x=rnd(0,W);}cx.beginPath();cx.arc(b.x,b.y,b.r,0,Math.PI*2);cx.strokeStyle=`rgba(0,255,180,${b.a})`;cx.lineWidth=.65;cx.stroke();});const sy=H*.085;cx.beginPath();for(let x=0;x<=W;x+=4){const y=sy+Math.sin(x*.016+idleF*.022)*4;x===0?cx.moveTo(x,y):cx.lineTo(x,y);}cx.strokeStyle='rgba(0,255,180,.18)';cx.lineWidth=1.5;cx.stroke();}
 
@@ -1453,8 +1455,11 @@ function applyLang(){
 let _pendingScore=0, _pendingPhase=0;
 function promptName(sc,ph){
   _pendingScore=sc; _pendingPhase=ph;
-  document.getElementById('nameWrap').style.display='flex';
-  const ni=document.getElementById('nameInput'); ni.value=''; ni.focus();
+  const nw=document.getElementById('nameWrap');
+  if(!nw) return; // seguro se elemento não existe
+  nw.style.display='flex';
+  const ni=document.getElementById('nameInput');
+  if(ni){ ni.value=''; setTimeout(()=>{try{ni.focus();}catch(e){}},100); }
 }
 function skipRanking(){
   document.getElementById('nameWrap').style.display='none';
